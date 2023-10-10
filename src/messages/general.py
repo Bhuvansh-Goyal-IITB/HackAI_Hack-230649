@@ -4,6 +4,12 @@ class Currency(Model):
     symbol: str
     code: str
 
+class SetBaseCurrencyQuery(Model):
+    pass
+
+class SetForeignCurrencyQuery(Model):
+    pass
+
 class ForeignCurrencyAddQuery(Model):
     currency: str
     min: float

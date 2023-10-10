@@ -2,22 +2,19 @@ from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
 from messages import *
 from utils import custom_logger
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-CURRENCY_AGENT_ADDRESS = "agent1qtjptsnjm3et0728c0tmr5lapqe2nrwvsycp0zhcaj44asl0f83ykfuftyd"
+CURRENCY_AGENT_ADDRESS = "{currency_agent_address}"
  
 user = Agent(
     name="user",
-    seed="user secret phrase"
+    seed=os.environ["USER_AGENT_SEED"] or "Open Sesame"
 )
  
 fund_agent_if_low(user.wallet.address())
-
-class SetBaseCurrencyQuery(Model):
-    pass
-
-class SetForeignCurrencyQuery(Model):
-    pass
 
 @user.on_event("startup")
 async def handle_start(ctx: Context):
