@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "hack-230649"
+version = "0.1.0"
+description = "Currency exchange notifier bot using uAgents library"
+authors = ["Bhuvansh <bhuvanshgoyal2004@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+uagents = "^0.6.2"
+currencyapicom = "^0.1.1"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

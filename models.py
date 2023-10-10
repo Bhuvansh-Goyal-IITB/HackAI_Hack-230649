@@ -17,7 +17,7 @@ class QueryResponse(Model):
     message: str
 
 class ForeignCurrencyAddResponse(QueryResponse):
-    pass
+    currency: str
 
 class CurrencyVerifyResponse(QueryResponse):
     success: bool
@@ -31,7 +31,7 @@ class StartMonitoringQuery(Model):
     print_logs: bool
     
 class BaseCurrencySetResponse(QueryResponse):
-    pass
+    currency: str
 
 class CurrencyVerifyQuery(Model):
     currency_code: str

@@ -20,7 +20,7 @@ class SetForeignCurrencyQuery(Model):
 
 @user.on_event("startup")
 async def handle_start(ctx: Context):
-    ctx.storage.set("base-currency-set", False)
+    ctx.storage.clear()
     await ctx.send(ctx.address, SetBaseCurrencyQuery())
     
 @user.on_message(model=SetBaseCurrencyQuery, replies=CurrencyVerifyQuery)
@@ -41,25 +41,29 @@ async def handle_foreign_currency_verify(ctx: Context, sender: str, msg: SetFore
 async def handle_base_currency_set_response(ctx: Context, sender: str, msg:BaseCurrencySetResponse):
     ctx.logger.info(f"{msg.message}")
     if msg.success:
-        ctx.storage.set("base-currency-set", True)
+        ctx.storage.set("base-currency", msg.currency)
         await ctx.send(ctx.address, SetForeignCurrencyQuery())
     # else ?
+
 @user.on_message(model=ForeignCurrencyAddResponse, replies=SetForeignCurrencyQuery)
 async def handle_foreign_currency_set_response(ctx: Context, sender: str, msg:ForeignCurrencyAddResponse):
     ctx.logger.info(f"{msg.message}")
+    foreign_currencies = ctx.storage.get("foreign-currencies") or []
+    foreign_currencies.append(msg.currency)
+    ctx.storage.set("foreign-currencies", foreign_currencies)
     await ctx.send(ctx.address, SetForeignCurrencyQuery())
 
 @user.on_message(model=CurrencyVerifyResponse, replies={SetBaseCurrencyQuery, BaseCurrencySetQuery, SetForeignCurrencyQuery, ForeignCurrencyAddQuery})
 async def handle_verify_response(ctx: Context, sender: str, msg: CurrencyVerifyResponse):
     ctx.logger.info(msg.message)
 
-    if not ctx.storage.get("base-currency-set"):
+    if not ctx.storage.get("base-currency"):
         if not msg.success:
             await ctx.send(ctx.address, SetBaseCurrencyQuery())
         else:
             await ctx.send(CURRENCY_AGENT_ADDRESS, BaseCurrencySetQuery(currency=msg.currency))
     else:
-        if not msg.success:
+        if not msg.success or msg.currency == ctx.storage.get("base-currency"):
             await ctx.send(ctx.address, SetForeignCurrencyQuery())
         else:
             min = int(input("Set min: ")) 

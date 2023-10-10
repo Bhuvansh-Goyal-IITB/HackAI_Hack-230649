@@ -14,6 +14,8 @@ currency_agent.include(query_proto)
 
 @currency_agent.on_event("startup")
 async def fetch_currency_data(ctx: Context):
-    # result = apiHandler.get_currency_data()
-    # ctx.storage.set("currency-data", result)
+    ctx.storage.clear()
+
+    result = apiHandler.get_currency_data()
+    ctx.storage.set("currency-data", result)
     ctx.logger.info("Fetched latest currency data")
