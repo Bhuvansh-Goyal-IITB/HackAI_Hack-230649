@@ -2,14 +2,15 @@ from uagents import Protocol, Context
 from models import  *
 import asyncio
 from api import apiHandler
+from custom_logger import custom_logger
 
 query_proto = Protocol(name="Query")
 
-@query_proto.on_message(model=CurrencyVerifyQuery, replies=CurrencyVerifyResponse)
+@query_proto.on_message(model=CurrencyVerifyQuery, replies={CurrencyVerifyResponse, ErrorResponse})
 async def handle_currency_verification(ctx: Context, sender: str, msg: CurrencyVerifyQuery):
     currency_data = ctx.storage.get("currency-data")
     if not currency_data:
-        await ctx.send(sender, QueryResponse(success=False, message=f"Couldnt find currency data"))
+        await ctx.send(sender, ErrorResponse(success=False, message=f"Couldnt find currency data"))
         return
     if msg.currency_code in list(currency_data["data"].keys()):
         await ctx.send(sender, CurrencyVerifyResponse(success=True, message="Currency is valid", currency=msg.currency_code))
@@ -45,10 +46,10 @@ async def start_monitoring(ctx: Context, sender: str, msg: StartMonitoringQuery)
         value = round(float(exchange_data['data'][currency]['value']), 2)
 
         if msg.print_logs:
-            ctx.logger.info(f"{currency_object['currency']} -> {value} {currency_data['data'][currency]['symbol']}")
+            custom_logger.info(f"{currency_object['currency']} -> {value} {currency_data['data'][currency]['symbol']}")
         
         if min > value or value > max:
-            ctx.logger.warn(f"{currency_object['currency']} is out of bounds")
+            custom_logger.alert(f"{currency_object['currency']} is out of bounds")
 
     await asyncio.sleep(msg.period)
     await ctx.send(ctx.address, msg)

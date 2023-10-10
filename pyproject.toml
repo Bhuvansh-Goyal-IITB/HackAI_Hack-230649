@@ -10,6 +10,7 @@ python = ">=3.11,<3.12"
 uagents = "^0.6.2"
 currencyapicom = "^0.1.1"
 python-dotenv = "^1.0.0"
+colorlog = "^6.7.0"
 
 
 [build-system]
