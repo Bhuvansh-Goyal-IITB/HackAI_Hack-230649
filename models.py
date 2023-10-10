@@ -26,6 +26,10 @@ class CurrencyVerifyResponse(QueryResponse):
 class BaseCurrencySetQuery(Model):
     currency: str
 
+class StartMonitoringQuery(Model):
+    period: float
+    print_logs: bool
+    
 class BaseCurrencySetResponse(QueryResponse):
     pass
 

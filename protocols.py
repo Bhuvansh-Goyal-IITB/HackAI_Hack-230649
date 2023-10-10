@@ -1,5 +1,7 @@
 from uagents import Protocol, Context
 from models import  *
+import asyncio
+from api import apiHandler
 
 query_proto = Protocol(name="Query")
 
@@ -23,6 +25,26 @@ async def handle_set_base_currency(ctx: Context, sender: str, msg: BaseCurrencyS
     
     ctx.storage.set("base-currency", currency_data["data"][msg.currency])
     await ctx.send(sender, BaseCurrencySetResponse(success=True, message=f"Base Currency set to {msg.currency}"))
+
+@query_proto.on_message(model=StartMonitoringQuery)
+async def start_monitoring(ctx: Context, sender: str, msg: StartMonitoringQuery):
+    foreign_currencies = ctx.storage.get("foreign-currencies")
+    base_currency = ctx.storage.get("base-currency")
+    currency_data = ctx.storage.get("currency-data")
+    if not currency_data:
+        await ctx.send(sender, BaseCurrencySetResponse(success=False, message=f"Couldnt find currency data"))
+        return
+
+    if not foreign_currencies or not base_currency:
+        #error
+        pass
+
+    exchange_data = apiHandler.get_latest_exchange_rates(base_currency=base_currency['code'], foreign_currencies=[curr['currency']['code'] for curr in foreign_currencies])
+
+    for currency_code, value in exchange_data["data"].items():
+        ctx.logger.info(f"{currency_code} -> {round(float(value['value']), 2)} {currency_data['data'][currency_code]['symbol']}")
+    await asyncio.sleep(msg.period)
+    await ctx.send(ctx.address, msg)
 
 @query_proto.on_message(model=ForeignCurrencyAddQuery, replies=ForeignCurrencyAddResponse)
 async def handle_add_foreign_currency(ctx: Context, sender: str, msg: ForeignCurrencyAddQuery):

@@ -21,46 +21,35 @@ class SetForeignCurrencyQuery(Model):
 @user.on_event("startup")
 async def handle_start(ctx: Context):
     ctx.storage.set("base-currency-set", False)
-    ctx.storage.set("foreign-currencies-set", False)
     await ctx.send(ctx.address, SetBaseCurrencyQuery())
     
-
-@user.on_message(model=SetBaseCurrencyQuery)
+@user.on_message(model=SetBaseCurrencyQuery, replies=CurrencyVerifyQuery)
 async def handle_base_currency_verify(ctx: Context, sender: str, msg: SetBaseCurrencyQuery):
     currency = input("Enter base currency: ")
     await ctx.send(CURRENCY_AGENT_ADDRESS, CurrencyVerifyQuery(currency_code=currency))
 
-@user.on_message(model=SetForeignCurrencyQuery)
+@user.on_message(model=SetForeignCurrencyQuery, replies={CurrencyVerifyQuery, StartMonitoringQuery})
 async def handle_foreign_currency_verify(ctx: Context, sender: str, msg: SetForeignCurrencyQuery):
     currency = input("Enter foreign currency (enter -1 for completing entry): ")
     if currency == "-1":
-        ctx.storage.set("foreign-currencies-set", True)
+        await ctx.send(CURRENCY_AGENT_ADDRESS, StartMonitoringQuery(print_logs=True, period=10))
         return
     
     await ctx.send(CURRENCY_AGENT_ADDRESS, CurrencyVerifyQuery(currency_code=currency))
    
-@user.on_interval(period=1)
-async def get_exchange_rates(ctx: Context):
-    setup_done = ctx.storage.get('base-currency-set') and ctx.storage.get('foreign-currencies-set')
-    if setup_done:
-        ctx.logger.info(f"Exchange Rates")
-
-@user.on_message(model=BaseCurrencySetResponse)
+@user.on_message(model=BaseCurrencySetResponse, replies=SetForeignCurrencyQuery)
 async def handle_base_currency_set_response(ctx: Context, sender: str, msg:BaseCurrencySetResponse):
     ctx.logger.info(f"{msg.message}")
     if msg.success:
         ctx.storage.set("base-currency-set", True)
         await ctx.send(ctx.address, SetForeignCurrencyQuery())
-
-@user.on_message(model=ForeignCurrencyAddResponse)
+    # else ?
+@user.on_message(model=ForeignCurrencyAddResponse, replies=SetForeignCurrencyQuery)
 async def handle_foreign_currency_set_response(ctx: Context, sender: str, msg:ForeignCurrencyAddResponse):
     ctx.logger.info(f"{msg.message}")
-    if msg.success:
-        await ctx.send(ctx.address, SetForeignCurrencyQuery())
-    else:
-        ctx.send(ctx.address, SetForeignCurrencyQuery())
+    await ctx.send(ctx.address, SetForeignCurrencyQuery())
 
-@user.on_message(model=CurrencyVerifyResponse)
+@user.on_message(model=CurrencyVerifyResponse, replies={SetBaseCurrencyQuery, BaseCurrencySetQuery, SetForeignCurrencyQuery, ForeignCurrencyAddQuery})
 async def handle_verify_response(ctx: Context, sender: str, msg: CurrencyVerifyResponse):
     ctx.logger.info(msg.message)
 
@@ -69,8 +58,7 @@ async def handle_verify_response(ctx: Context, sender: str, msg: CurrencyVerifyR
             await ctx.send(ctx.address, SetBaseCurrencyQuery())
         else:
             await ctx.send(CURRENCY_AGENT_ADDRESS, BaseCurrencySetQuery(currency=msg.currency))
-
-    elif not ctx.storage.get("foreign-currencies-set"):
+    else:
         if not msg.success:
             await ctx.send(ctx.address, SetForeignCurrencyQuery())
         else:
