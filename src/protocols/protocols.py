@@ -1,8 +1,7 @@
 from uagents import Protocol, Context
-from models import  *
+from messages import  *
 import asyncio
-from api import apiHandler
-from custom_logger import custom_logger
+from utils import apiHandler, custom_logger
 
 query_proto = Protocol(name="Query")
 
@@ -48,9 +47,12 @@ async def start_monitoring(ctx: Context, sender: str, msg: StartMonitoringQuery)
         if msg.print_logs:
             custom_logger.info(f"{currency_object['currency']} -> {value} {currency_data['data'][currency]['symbol']}")
         
-        if min > value or value > max:
-            custom_logger.alert(f"{currency_object['currency']} is out of bounds")
+        if min > value:
+            custom_logger.alert(f"{currency_object['currency']} is lower than {min} {currency_data['data'][currency]['symbol']}")
 
+        if max < value:
+            custom_logger.alert(f"{currency_object['currency']} is higher than {max} {currency_data['data'][currency]['symbol']}")
+    
     await asyncio.sleep(msg.period)
     await ctx.send(ctx.address, msg)
 

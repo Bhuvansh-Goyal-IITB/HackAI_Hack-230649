@@ -1,7 +1,7 @@
 from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
-from models import *
-from custom_logger import custom_logger
+from messages import *
+from utils import custom_logger
 
 
 CURRENCY_AGENT_ADDRESS = "agent1qtjptsnjm3et0728c0tmr5lapqe2nrwvsycp0zhcaj44asl0f83ykfuftyd"
@@ -23,17 +23,24 @@ class SetForeignCurrencyQuery(Model):
 async def handle_start(ctx: Context):
     ctx.storage.clear()
     await ctx.send(ctx.address, SetBaseCurrencyQuery())
-    
+
 @user.on_message(model=SetBaseCurrencyQuery, replies=CurrencyVerifyQuery)
 async def handle_base_currency_verify(ctx: Context, sender: str, msg: SetBaseCurrencyQuery):
-    currency = input("Enter base currency: ")
+    currency = input("Enter base currency code in CAPS: ")
     await ctx.send(CURRENCY_AGENT_ADDRESS, CurrencyVerifyQuery(currency_code=currency))
 
-@user.on_message(model=SetForeignCurrencyQuery, replies={CurrencyVerifyQuery, StartMonitoringQuery})
+@user.on_message(model=SetForeignCurrencyQuery, replies={CurrencyVerifyQuery, StartMonitoringQuery, SetForeignCurrencyQuery})
 async def handle_foreign_currency_verify(ctx: Context, sender: str, msg: SetForeignCurrencyQuery):
     currency = input("Enter foreign currency (enter -1 for completing entry): ")
     if currency == "-1":
-        await ctx.send(CURRENCY_AGENT_ADDRESS, StartMonitoringQuery(print_logs=True, period=10))
+        if not ctx.storage.get("foreign-currencies"):
+            custom_logger.error("No foreign currencies set")
+            await ctx.send(ctx.address, SetForeignCurrencyQuery())
+            return
+
+        period = float(input("Enter period for checking real time data (in seconds): "))
+        print_logs = input("Do you want to print logs (y/n): ").lower() == "y"
+        await ctx.send(CURRENCY_AGENT_ADDRESS, StartMonitoringQuery(print_logs=print_logs, period=period))
         return
     
     await ctx.send(CURRENCY_AGENT_ADDRESS, CurrencyVerifyQuery(currency_code=currency))
@@ -81,7 +88,18 @@ async def handle_verify_response(ctx: Context, sender: str, msg: CurrencyVerifyR
             await ctx.send(ctx.address, SetForeignCurrencyQuery())
         else:
             min = float(input("Set min: ")) 
+
+            if min < 0:
+                custom_logger.error("Cannot set min to -ve")
+                await ctx.send(ctx.address, SetForeignCurrencyQuery())
+                return
+            
             max = float(input("Set max: "))
+
+            if max < 0:
+                custom_logger.error("Cannot set max to -ve")
+                await ctx.send(ctx.address, SetForeignCurrencyQuery())
+                return
 
             await ctx.send(CURRENCY_AGENT_ADDRESS, ForeignCurrencyAddQuery(currency=msg.currency, min=min, max=max))
             
