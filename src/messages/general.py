@@ -1,13 +1,10 @@
 from uagents import Model
 
-class Currency(Model):
-    symbol: str
-    code: str
-
-class SetBaseCurrencyQuery(Model):
+# Queries
+class BaseCurrencyInputQuery(Model):
     pass
 
-class SetForeignCurrencyQuery(Model):
+class ForeignCurrencyInputQuery(Model):
     pass
 
 class ForeignCurrencyAddQuery(Model):
@@ -15,6 +12,17 @@ class ForeignCurrencyAddQuery(Model):
     min: float
     max: float
 
+class BaseCurrencySetQuery(Model):
+    currency: str
+
+class StartMonitoringQuery(Model):
+    period: float
+    print_logs: bool
+
+class CurrencyVerifyQuery(Model):
+    currency: str
+
+# Responses
 class ErrorResponse(Model):
     error: str
 
@@ -28,17 +36,7 @@ class ForeignCurrencyAddResponse(QueryResponse):
 class CurrencyVerifyResponse(QueryResponse):
     success: bool
     currency: str
-
-class BaseCurrencySetQuery(Model):
-    currency: str
-
-class StartMonitoringQuery(Model):
-    period: float
-    print_logs: bool
     
 class BaseCurrencySetResponse(QueryResponse):
     currency: str
-
-class CurrencyVerifyQuery(Model):
-    currency_code: str
 
