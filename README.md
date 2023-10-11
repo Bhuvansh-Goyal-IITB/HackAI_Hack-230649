@@ -1,9 +1,4 @@
 
-# Currency Exchange Alert Agent
-
-An AI agent that notifies you when the exchange rates go out of bounds
-made using uAgents library
-
 
 
 
@@ -39,11 +34,11 @@ poetry install
 ### Step-3: Configure the user script
 Run the main script using
 ```shell 
-poetry run python main.py
+poetry run python main.py --address
 ```
 You need to look for the following output in the terminal
 ```shell
-INFO  Address of currency agent is {currency_agent_address}
+INFO - Address of currency agent is {currency_agent_address}
 ```
 Copy the {currency_agent_address} part and keep it somewhere safe
 
