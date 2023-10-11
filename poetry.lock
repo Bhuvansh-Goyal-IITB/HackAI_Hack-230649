@@ -146,6 +146,17 @@ validation = ["openapi-spec-validator (<0.5)", "prance[osv] (>=0.11)"]
 yaml = ["PyYAML (>=3.10)"]
 
 [[package]]
+name = "argparse"
+version = "1.4.0"
+description = "Python command-line parsing library"
+optional = false
+python-versions = "*"
+files = [
+    {file = "argparse-1.4.0-py2.py3-none-any.whl", hash = "sha256:c31647edb69fd3d465a847ea3157d37bed1f95f19760b11a47aa91c04b666314"},
+    {file = "argparse-1.4.0.tar.gz", hash = "sha256:62b089a55be1d8949cd2bc7e0df0bddb9e028faefc8c32038cc84862aefdd6e4"},
+]
+
+[[package]]
 name = "async-timeout"
 version = "4.0.3"
 description = "Timeout context manager for asyncio programs"
@@ -1300,4 +1311,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.12"
-content-hash = "f011a79958e65e0114c812b5a5f48af9d8fdf1030393078c82607b78c56f3de6"
+content-hash = "e3a5799b6298209b5e0da75bbb991568db21bfd132791dc79fde1abfe36a94c5"
