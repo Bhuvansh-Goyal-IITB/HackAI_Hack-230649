@@ -36,19 +36,19 @@ async def handle_foreign_currency_verify(ctx: Context, sender: str, msg: Foreign
     
     if currency == "-1": 
         if not ctx.storage.get("foreign-currencies"):
-            custom_logger.error("No foreign currencies set")
+            custom_logger.error("No foreign currencies set. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
             await ctx.send(ctx.address, ForeignCurrencyInputQuery())
             return
 
         try:
             period = float(input("Enter period for checking real time data (in seconds): "))
         except ValueError:
-            custom_logger.error("period must be a number")
+            custom_logger.error("period must be a number. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
             await ctx.send(ctx.address, ForeignCurrencyInputQuery())
             return
         
         if period < 0:
-            custom_logger.error("period cannot be negative")
+            custom_logger.error("period cannot be negative. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
             await ctx.send(ctx.address, ForeignCurrencyInputQuery())
             return
 
@@ -108,13 +108,13 @@ async def handle_verify_response(ctx: Context, sender: str, msg: CurrencyVerifyR
             await ctx.send(CURRENCY_AGENT_ADDRESS, BaseCurrencySetQuery(currency=msg.currency))
     else:
         if msg.currency == ctx.storage.get("base-currency"):
-            custom_logger.error("Cannot set foreign currency to base currency")
+            custom_logger.error("Cannot set foreign currency to base currency. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
             await ctx.send(ctx.address, ForeignCurrencyInputQuery())
             return
         
         foreign_currencies = ctx.storage.get("foreign-currencies") or []
         if msg.currency in foreign_currencies:
-            custom_logger.error("This foreign currency is already set")
+            custom_logger.error("This foreign currency is already set. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
             await ctx.send(ctx.address, ForeignCurrencyInputQuery())
             return
         
@@ -124,19 +124,19 @@ async def handle_verify_response(ctx: Context, sender: str, msg: CurrencyVerifyR
             min = float(input("Set min: ")) 
 
             if min < 0:
-                custom_logger.error("Cannot set min to -ve")
+                custom_logger.error("Cannot set min to -ve. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
                 await ctx.send(ctx.address, ForeignCurrencyInputQuery())
                 return
             
             max = float(input("Set max: "))
 
             if max < 0:
-                custom_logger.error("Cannot set max to -ve")
+                custom_logger.error("Cannot set max to -ve. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
                 await ctx.send(ctx.address, ForeignCurrencyInputQuery())
                 return
             
             if max <= min:
-                custom_logger.error("Cannot set max less than or equal to min")
+                custom_logger.error("Cannot set max less than or equal to min. for more information follow this link https://www.youtube.com/watch?v=dQw4w9WgXcQ")
                 await ctx.send(ctx.address, ForeignCurrencyInputQuery())
                 return
 
