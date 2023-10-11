@@ -11,7 +11,7 @@ made using uAgents library
     - Foreign currency: INR
     - min = 80
     - max = 84
-The agent will give you an alert when the exchange rate goes below 80, or above 84
+- The agent will give you an alert when the exchange rate goes below 80, or above 84
 
 
 
