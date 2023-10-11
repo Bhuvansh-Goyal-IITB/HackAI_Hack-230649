@@ -12,7 +12,7 @@ made using uAgents library
     - min = 80
     - max = 84
 - The agent will give you an alert when the exchange rate goes below 80, or above 84
-**Note:** If you try to mess with the agent, don't blame us :P
+- **Note:** If you try to mess with the agent, don't blame us :P
 
 
 
