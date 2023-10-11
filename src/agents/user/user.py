@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-CURRENCY_AGENT_ADDRESS = "agent1qwv9zg92hx47fthevdpqxdrw9emrmu70ujztxckxrp2eycj39fl56sd8yhd"
+CURRENCY_AGENT_ADDRESS = "{currency_agent_address}"
  
 user = Agent(
     name="user",
