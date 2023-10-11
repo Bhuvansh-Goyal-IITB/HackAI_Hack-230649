@@ -12,6 +12,14 @@ made using uAgents library
     - min = 80
     - max = 84
 - The agent will give you an alert when the exchange rate goes below 80, or above 84
+- Errors possible:
+    - if you encounter this error
+
+    - ERROR:    [ user]: Unable to resolve destination endpoint for address 
+    - then ensure that you have done step-3 correctly (the curly brackets should be removed)
+
+    - if you get an API error then ensure that you have done step-2 correctly (the curly brackets should be removed) 
+    
 - **Note:** If you try to mess with the agent, don't blame us :P
 
 
