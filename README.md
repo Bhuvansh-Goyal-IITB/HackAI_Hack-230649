@@ -1,4 +1,20 @@
 
+# Currency Exchange Alert Agent
+
+An AI agent that notifies you when the exchange rates go out of bounds
+made using uAgents library
+- This is a CLI tool
+- This agent lets you enter a base currency, multiple foreign currencies, and lets you set the min and max threshold values for each foreign currency
+- The agent will then notify you when the currency exchange rate  goes outside the threshold set by you.
+For example,
+- Base currency: USD
+- Foreign currency: INR
+- min = 80
+- max = 84
+The agent will give you an alert when the exchange rate goes below 80, or above 84
+
+
+
 
 
 
