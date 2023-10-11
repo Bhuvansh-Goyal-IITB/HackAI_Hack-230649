@@ -19,7 +19,7 @@ made using uAgents library
     - then ensure that you have done step-3 correctly (the curly brackets should be removed)
 
     - if you get an API error then ensure that you have done step-2 correctly (the curly brackets should be removed) 
-    
+    - if you get an error related to port, then try to change the bureau port in the main.py file 
 - **Note:** If you try to mess with the agent, don't blame us :P
 
 
